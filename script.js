@@ -30,20 +30,31 @@ const Gameboard = (() => {
 
 
 // Player Factory will create the player objects with a name and symbol ('X' or 'O')
-const Player = (name, symbol) => ({ name, symbol });
+const Player = (name, symbol, isComputer = false) => ({ name, symbol, isComputer });
 
 
 // GameController Module, manages the game flow, also an IIFE to avoid polluting the global scope
 const GameController = (() => {
     // Initialize two players
     const player1 = Player('Player 1', 'X');
-    const player2 = Player('Player 2', 'O');
+    // const player2 = Player('Player 2', 'O');
+    const computerPlayer = Player('Player 2', 'O', true);
     let currentPlayer = player1;
     let isGameOver = false;
 
-    // Switch to the other player
-    const switchPlayer = () => { currentPlayer = currentPlayer === player1 ? player2 : player1; };
+    // Simple function that selects a random empty square
+    const getRandomMove = () => {
+        const emptySquares = Gameboard.getBoard().map((symbol, index) => {
+            return symbol === '' ? index : null;
+        }).filter(index => index !== null);
+    
+        const randomIndex = Math.floor(Math.random() * emptySquares.length);
+        return emptySquares[randomIndex];
+    };
 
+    // Switch to the other player
+    const switchPlayer = () => { currentPlayer = currentPlayer === player1 ? computerPlayer : player1; };
+    
     // Play a turn at a specific index
     const playTurn = (index) => {
         console.log('Player:', currentPlayer.name); // Log current player
@@ -52,16 +63,17 @@ const GameController = (() => {
 
             if (checkWin(currentPlayer.symbol)) {
                 isGameOver = true;
-                // alert(`${currentPlayer.name} wins!`);
             }
 
             else if (Gameboard.getBoard().every(square => square !== '')) {
                 isGameOver = true;
-                // alert("It's a tie!");
             }
 
             else {
                 switchPlayer();
+                if (currentPlayer.isComputer) {
+                    playTurn(getRandomMove());
+                }
                 console.log('Switched to player:', currentPlayer.name); // Log player switch
             }
         }
@@ -113,7 +125,7 @@ const DisplayController = (() => {
             const square = document.createElement('div');
             square.textContent = symbol;
             square.classList.add('square'); // Add a class for better styling and debugging
-            
+
             square.addEventListener('click', () => {
                 if (!GameController.getGameOverStatus() && Gameboard.getBoard()[index] === '') {
                     GameController.playTurn(index);

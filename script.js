@@ -10,6 +10,7 @@ const Gameboard = (() => {
     // Function to set a value in the board array
     const setSquare = (index, symbol) => {
         console.log('Attempting to set square at index:', index, 'with symbol:', symbol); // Log setting square
+        
         if (index >= 0 && index < board.length && board[index] === '') {
             board[index] = symbol;
             return true;
@@ -29,9 +30,7 @@ const Gameboard = (() => {
 
 
 // Player Factory will create the player objects with a name and symbol ('X' or 'O')
-const Player = (name, symbol) => {
-    return { name, symbol };
-};
+const Player = (name, symbol) => ({ name, symbol });
 
 
 // GameController Module, manages the game flow, also an IIFE to avoid polluting the global scope
@@ -43,17 +42,13 @@ const GameController = (() => {
     let isGameOver = false;
 
     // Switch to the other player
-    const switchPlayer = () => {
-        currentPlayer = currentPlayer === player1 ? player2 : player1;
-    };
+    const switchPlayer = () => { currentPlayer = currentPlayer === player1 ? player2 : player1; };
 
     // Play a turn at a specific index
     const playTurn = (index) => {
         console.log('Player:', currentPlayer.name); // Log current player
-        console.log('Index clicked:', index); // Log index clicked
         
         if (!isGameOver && Gameboard.setSquare(index, currentPlayer.symbol)) {
-            console.log('Board updated:', Gameboard.getBoard()); // Log updated board
 
             if (checkWin(currentPlayer.symbol)) {
                 isGameOver = true;
@@ -118,8 +113,8 @@ const DisplayController = (() => {
             const square = document.createElement('div');
             square.textContent = symbol;
             square.classList.add('square'); // Add a class for better styling and debugging
+            
             square.addEventListener('click', () => {
-                console.log('Square clicked:', index); // Log square click
                 if (!GameController.getGameOverStatus() && Gameboard.getBoard()[index] === '') {
                     GameController.playTurn(index);
                     updateDisplay(); // Refresh the display after a turn

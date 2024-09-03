@@ -9,15 +9,18 @@ const Gameboard = (() => {
 
     // Function to set a value in the board array
     const setSquare = (index, symbol) => {
+        console.log('Attempting to set square at index:', index, 'with symbol:', symbol); // Log setting square
         if (index >= 0 && index < board.length && board[index] === '') {
             board[index] = symbol;
             return true;
         }
+        console.log('Failed to set square at index:', index); // Log failed attempt
         return false;
     };
 
     // Function to reset the game board
     const resetBoard = () => {
+        console.log('Resetting board'); // Log board reset
         board = ['', '', '', '', '', '', '', '', ''];
     };
 
@@ -46,16 +49,30 @@ const GameController = (() => {
 
     // Play a turn at a specific index
     const playTurn = (index) => {
+        console.log('Player:', currentPlayer.name); // Log current player
+        console.log('Index clicked:', index); // Log index clicked
+        
         if (!isGameOver && Gameboard.setSquare(index, currentPlayer.symbol)) {
+            console.log('Board updated:', Gameboard.getBoard()); // Log updated board
+
             if (checkWin(currentPlayer.symbol)) {
-                alert(`${currentPlayer.name} wins!`);
                 isGameOver = true;
-            } else if (Gameboard.getBoard().every(square => square !== '')) {
-                alert("It's a tie!");
-                isGameOver = true;
-            } else {
-                switchPlayer();
+                // alert(`${currentPlayer.name} wins!`);
             }
+
+            else if (Gameboard.getBoard().every(square => square !== '')) {
+                isGameOver = true;
+                // alert("It's a tie!");
+            }
+
+            else {
+                switchPlayer();
+                console.log('Switched to player:', currentPlayer.name); // Log player switch
+            }
+        }
+
+        else {
+            console.log('Invalid move or game over'); // Log invalid move or game over status
         }
     };
 
@@ -67,9 +84,12 @@ const GameController = (() => {
             [0, 4, 8], [2, 4, 6]             // diagonals
         ];
 
-        return winConditions.some(condition => 
+        const win = winConditions.some(condition => 
             condition.every(index => Gameboard.getBoard()[index] === symbol)
         );
+        
+        console.log('Checking win for symbol:', symbol); // Log symbol being checked
+        return win;
     };
 
     // Reset the game to its initial state
@@ -79,7 +99,9 @@ const GameController = (() => {
         currentPlayer = player1;
     };
 
-    return { playTurn, resetGame };
+    const getGameOverStatus = () => isGameOver;
+
+    return { playTurn, resetGame, getGameOverStatus };
 })();
 
 
@@ -90,11 +112,19 @@ const DisplayController = (() => {
 
     // Update the display to reflect the current game board state
     const updateDisplay = () => {
+        console.log('Updating display'); // Log when display is updated
         gameboardDiv.innerHTML = '';
         Gameboard.getBoard().forEach((symbol, index) => {
             const square = document.createElement('div');
             square.textContent = symbol;
-            square.addEventListener('click', () => GameController.playTurn(index));
+            square.classList.add('square'); // Add a class for better styling and debugging
+            square.addEventListener('click', () => {
+                console.log('Square clicked:', index); // Log square click
+                if (!GameController.getGameOverStatus() && Gameboard.getBoard()[index] === '') {
+                    GameController.playTurn(index);
+                    updateDisplay(); // Refresh the display after a turn
+                }
+            });
             gameboardDiv.appendChild(square);
         });
     };
@@ -102,6 +132,7 @@ const DisplayController = (() => {
     // Set up the restart button to reset the game
     const setupRestartButton = () => {
         restartButton.addEventListener('click', () => {
+            console.log('Restart button clicked'); // Log restart button click
             GameController.resetGame();
             updateDisplay();
         });

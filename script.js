@@ -42,7 +42,7 @@ const GameController = (() => {
     let currentPlayer = player1;
     let isGameOver = false;
 
-    // Simple function that selects a random empty square
+    // Simple function that allows the computer to select a random empty square
     const getRandomMove = () => {
         const emptySquares = Gameboard.getBoard().map((symbol, index) => {
             return symbol === '' ? index : null;
@@ -51,6 +51,41 @@ const GameController = (() => {
         const randomIndex = Math.floor(Math.random() * emptySquares.length);
         return emptySquares[randomIndex];
     };
+    
+    const getBestMove = () => {
+        const board = Gameboard.getBoard();
+
+        // Check if computer can win in the next move
+        for (let i = 0; i < board.length; i++) {
+            if (board[i] === '') {
+                board[i] = computerPlayer.symbol;
+
+                if (checkWin(computerPlayer.symbol)) {
+                    board[i] = '';
+                    return i;
+                }
+
+                board[i] = '';
+            }
+        }
+
+        // Check if the player can win in the next move and block it
+        for (let i = 0; i < board.length; i++) {
+            if (board[i] === '') {
+                board[i] = player1.symbol;
+
+                if (checkWin(player1.symbol)) {
+                    board[i] = '';
+                    return i;
+                }
+
+                board[i] = '';
+            }
+        }
+
+        // Otherwise, pick a random empty square
+        return getRandomMove();
+    }
 
     // Switch to the other player
     const switchPlayer = () => { currentPlayer = currentPlayer === player1 ? computerPlayer : player1; };
@@ -72,7 +107,7 @@ const GameController = (() => {
             else {
                 switchPlayer();
                 if (currentPlayer.isComputer) {
-                    playTurn(getRandomMove());
+                    playTurn(getBestMove());
                 }
                 console.log('Switched to player:', currentPlayer.name); // Log player switch
             }

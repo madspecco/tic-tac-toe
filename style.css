@@ -16,24 +16,30 @@ body {
 
 #gameboard {
     display: grid;
-    grid-template-columns: repeat(3, 240px);
-    grid-template-rows: repeat(3, 240px);
-    gap: 5px;
+    grid-template-columns: repeat(3, 15rem);    /* 240px / 16px base font-size = 15rem */
+    grid-template-rows: repeat(3, 15rem);       /* 240px / 16px base font-size = 15rem */
+    gap: 0.5rem;                                /* 8px / 16px base font-size = 0.5rem */
 }
 
+/* responsible for the symbols inside the grid */
 #gameboard div {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 36px;
+    font-size: 2.25rem;                 /* 36px / 16px base font-size = 2.25rem */
     background-color: #fff;
-    border: 2px solid #333;
+    border: 0.125rem solid #333;      /* 2px / 16px base font-size = 0.125rem */
     cursor: pointer;
 }
 
+#controls div {
+    margin: 1rem;
+}
+
+
 #restart-btn {
-    margin-top: 20px;
-    padding: 10px 20px;
-    font-size: 16px;
+    margin-top: 0.625rem;
+    padding: 0.625rem 1.25rem;
+    font-size: 1rem;
     cursor: pointer;
 }

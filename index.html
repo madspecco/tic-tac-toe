@@ -10,7 +10,24 @@
 <body>
     <div id="game-container">
         <div id="gameboard"></div>
-        <button id="restart-btn">Restart Game</button>
+
+        <div id="controls">
+            <!-- Wrap each control in its own div for vertical layout -->
+            <div>
+                <!-- Difficulty menu -->
+                <label for="difficulty">Difficulty:</label>
+                <select id="difficulty">
+                    <option value="easy">EASY</option>
+                    <option value="medium">MEDIUM</option>
+                    <option value="hard">HARD</option>
+                    <option value="impossible">IMPOSSIBLE</option>
+                </select>  
+            </div>
+
+            <div>
+                <button id="restart-btn">Restart Game</button>
+            </div>
+        </div>
     </div>
     <script src="script.js"></script>
 </body>

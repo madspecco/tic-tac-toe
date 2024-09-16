@@ -1,3 +1,25 @@
+// Bot difficulty levels
+const difficultyLevels = {
+    easy: 0.1,      // 10% chance of making the best move
+    medium: 0.5,    // 50% chance of making the best move
+    hard: 0.9,      // 90% chance of making the best move
+    impossible: 1   // 100% chance of making the best move
+};
+    
+let botDifficulty = difficultyLevels.medium;    // Set medium by default
+    
+// Function to set the difficulty based on selection
+const setDifficulty = (difficulty) => {
+    botDifficulty = difficultyLevels[difficulty] || difficultyLevels.medium;
+};
+
+// Event listener for the difficulty menu
+document.getElementById('difficulty').addEventListener('change', (event) => {
+    setDifficulty(event.target.value);
+    console.log('Difficulty set to:', event.target.value);
+});
+
+
 // Gameboard Factory
 // Since there will be only one Gameboard needed, I will create it as an array inside an IIFE (Immediately Invoked Function Expression)
 const Gameboard = (() => {
@@ -114,7 +136,7 @@ const GameController = (() => {
                 }
             }
         }
-    
+        console.log('Bot Difficulty:', botDifficulty);
         // Optionally, prioritize the earliest win
         if (bestScore === 1) {
             return bestMoves.find(move => {
@@ -122,6 +144,14 @@ const GameController = (() => {
                 tempBoard[move] = computerPlayer.symbol;
                 return getWinner(tempBoard) === computerPlayer.symbol;
             }) || bestMoves[0];
+        }
+        
+        const randomValue = Math.random();
+        console.log('Random value:', randomValue);
+        // Adjust based on difficulty
+        if (randomValue > botDifficulty) {
+            console.log('Making a random move from:', bestMoves);
+            return bestMoves[Math.floor(Math.random() * bestMoves.length)];
         }
     
         // Otherwise, just return the first best move found

@@ -32,14 +32,30 @@ body {
     cursor: pointer;
 }
 
-#controls div {
-    margin: 1rem;
+/* style for the select drop-down */
+#difficulty {
+    font-size: 1rem;
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+    border: 0.125rem solid;
+    border-radius: 0.25rem;
+    text-align: center;
+    appearance: none;
 }
 
+#controls > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 1rem;
+}
 
 #restart-btn {
     margin-top: 0.625rem;
     padding: 0.625rem 1.25rem;
     font-size: 1rem;
     cursor: pointer;
+
+    border: 0.125rem solid;
+    border-radius: 0.25rem;
 }

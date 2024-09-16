@@ -117,6 +117,7 @@ const GameController = (() => {
         const board = Gameboard.getBoard();
         let bestScore = -Infinity;
         let bestMoves = [];
+        let allMoves = [];
         
         // Evaluate all possible moves
         for (let i = 0; i < board.length; i++) {
@@ -125,6 +126,9 @@ const GameController = (() => {
                 let score = Minimax(board, 0, false);
                 board[i] = ''; // Undo move
                 
+                // Collect all possible moves
+                allMoves.push(i);
+
                 // Compare moves and store them
                 if (score > bestScore) {
                     bestScore = score;
@@ -136,7 +140,6 @@ const GameController = (() => {
                 }
             }
         }
-        console.log('Bot Difficulty:', botDifficulty);
         // Optionally, prioritize the earliest win
         if (bestScore === 1) {
             return bestMoves.find(move => {
@@ -146,12 +149,10 @@ const GameController = (() => {
             }) || bestMoves[0];
         }
         
-        const randomValue = Math.random();
-        console.log('Random value:', randomValue);
         // Adjust based on difficulty
-        if (randomValue > botDifficulty) {
-            console.log('Making a random move from:', bestMoves);
-            return bestMoves[Math.floor(Math.random() * bestMoves.length)];
+        if (Math.random() > botDifficulty) {
+            const validMoves = allMoves.filter(move => board[move] === '');     // Ensure moves are valid
+            return validMoves[Math.floor(Math.random() * validMoves.length)];
         }
     
         // Otherwise, just return the first best move found

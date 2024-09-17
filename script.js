@@ -172,7 +172,10 @@ const GameController = (() => {
     }
 
     // Switch to the other player
-    const switchPlayer = () => { currentPlayer = currentPlayer === player1 ? computerPlayer : player1; };
+    const switchPlayer = () => {
+        currentPlayer = currentPlayer === player1 ? computerPlayer : player1;
+        DisplayController.updateTurnMessage(currentPlayer);
+    };
     
     // Play a turn at a specific index
     const playTurn = (index) => {
@@ -191,7 +194,10 @@ const GameController = (() => {
             else {
                 switchPlayer();
                 if (currentPlayer.isComputer) {
-                    playTurn(getBestMove());
+                    setTimeout(() => {
+                        playTurn(getBestMove());
+                        DisplayController.updateDisplay();
+                    }, 2000);
                 }
                 console.log('Switched to player:', currentPlayer.name); // Log player switch
             }
@@ -217,11 +223,13 @@ const GameController = (() => {
         Gameboard.resetBoard();
         isGameOver = false;
         currentPlayer = player1;
+        DisplayController.updateTurnMessage(currentPlayer);
     };
 
     const getGameOverStatus = () => isGameOver;
+    const getCurrentPlayer = () => currentPlayer;
 
-    return { playTurn, resetGame, getGameOverStatus };
+    return { playTurn, resetGame, getGameOverStatus, getCurrentPlayer };
 })();
 
 
@@ -249,6 +257,13 @@ const DisplayController = (() => {
         });
     };
 
+    // Function to update the current player's turn message
+    const updateTurnMessage = (player) => {
+        const playerTurnMessage = document.getElementById('turn');
+        playerTurnMessage.textContent = `It's ${player.name}'s turn.`;
+    };
+
+
     // Set up the restart button to reset the game
     const setupRestartButton = () => {
         restartButton.addEventListener('click', () => {
@@ -262,9 +277,10 @@ const DisplayController = (() => {
     const initialize = () => {
         updateDisplay();
         setupRestartButton();
+        updateTurnMessage(GameController.getCurrentPlayer());
     };
 
-    return { initialize };
+    return { initialize, updateTurnMessage, updateDisplay };
 })();
 
 // Initialize the game when the page loads

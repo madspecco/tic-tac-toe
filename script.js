@@ -193,10 +193,13 @@ const GameController = (() => {
 
             else {
                 switchPlayer();
+                DisplayController.setDisabledState(true);   // Temporarily block interactions with the grid
+
                 if (currentPlayer.isComputer) {
                     setTimeout(() => {
                         playTurn(getBestMove());
                         DisplayController.updateDisplay();
+                        DisplayController.setDisabledState(false);  // Re-enable interactions
                     }, 2000);
                 }
                 console.log('Switched to player:', currentPlayer.name); // Log player switch
@@ -273,6 +276,17 @@ const DisplayController = (() => {
         });
     };
 
+    // Function to disable interactions
+    const setDisabledState = (isDisabled) => {
+        if (isDisabled) {
+            gameboardDiv.classList.add('disabled');
+        }
+
+        else {
+            gameboardDiv.classList.remove('disabled');
+        }
+    };
+
     // Initialize the game display
     const initialize = () => {
         updateDisplay();
@@ -280,7 +294,7 @@ const DisplayController = (() => {
         updateTurnMessage(GameController.getCurrentPlayer());
     };
 
-    return { initialize, updateTurnMessage, updateDisplay };
+    return { initialize, updateTurnMessage, updateDisplay, setDisabledState };
 })();
 
 // Initialize the game when the page loads

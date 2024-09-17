@@ -33,6 +33,10 @@ body {
     cursor: pointer;
 }
 
+.disabled {
+    pointer-events: none; /* prevents mouse interactions */
+}
+
 /* style for the select drop-down */
 #difficulty {
     font-size: 1rem;

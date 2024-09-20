@@ -187,31 +187,25 @@ const GameController = (() => {
             if (winner) {
                 isGameOver = true;
                 DisplayController.updateResultMessage(winner); // Update result message for winner
+                DisplayController.updateTurnMessage(currentPlayer);    
             } else {
-                switchPlayer(); // Switch player if no winner
+                // If no winner, switch player
+                switchPlayer();
                 DisplayController.updateDisplay(); // Refresh the board display
+                DisplayController.updateTurnMessage(currentPlayer);
 
                 // If the new current player is a computer, make its move
                 if (currentPlayer.isComputer) {
                     setTimeout(() => {
                         playTurn(getBestMove()); // Bot makes a move
                         DisplayController.updateDisplay(); // Refresh the board after bot's move
+                        DisplayController.updateTurnMessage(currentPlayer);
                     }, 1000); // 1 second delay before bot moves
                 }
             }
         } else {
             console.log('Invalid move or game over'); // Log invalid move or game over status
         }
-    };
-
-    // Check if the current player has won
-    const checkWin = (symbol) => {
-        const win = winConditions.some(condition => 
-            condition.every(index => Gameboard.getBoard()[index] === symbol)
-        );
-        
-        console.log('Checking win for symbol:', symbol); // Log symbol being checked
-        return win;
     };
 
     // Reset the game to its initial state
@@ -258,7 +252,14 @@ const DisplayController = (() => {
     // Function to update the current player's turn message
     const updateTurnMessage = (player) => {
         const playerTurnMessage = document.getElementById('turn');
-        playerTurnMessage.textContent = `It's ${player.name}'s turn.`;
+
+        if (GameController.getGameOverStatus()) {
+            playerTurnMessage.textContent = 'Game Over. Press RESTART'
+        }
+
+        else {
+            playerTurnMessage.textContent = `It's ${player.name}'s turn.`;
+        }
     };
 
     // Function to update the result message

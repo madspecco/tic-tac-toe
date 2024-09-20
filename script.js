@@ -180,33 +180,26 @@ const GameController = (() => {
     // Play a turn at a specific index
     const playTurn = (index) => {
         console.log('Player:', currentPlayer.name); // Log current player
-        
+
         if (!isGameOver && Gameboard.setSquare(index, currentPlayer.symbol)) {
-
-            if (checkWin(currentPlayer.symbol)) {
+            // Check if the game has a winner or if it's a tie
+            const winner = getWinner(Gameboard.getBoard());
+            if (winner) {
                 isGameOver = true;
-            }
+                DisplayController.updateResultMessage(winner); // Update result message for winner
+            } else {
+                switchPlayer(); // Switch player if no winner
+                DisplayController.updateDisplay(); // Refresh the board display
 
-            else if (Gameboard.getBoard().every(square => square !== '')) {
-                isGameOver = true;
-            }
-
-            else {
-                switchPlayer();
-                DisplayController.setDisabledState(true);   // Temporarily block interactions with the grid
-
+                // If the new current player is a computer, make its move
                 if (currentPlayer.isComputer) {
                     setTimeout(() => {
-                        playTurn(getBestMove());
-                        DisplayController.updateDisplay();
-                        DisplayController.setDisabledState(false);  // Re-enable interactions
-                    }, 2000);
+                        playTurn(getBestMove()); // Bot makes a move
+                        DisplayController.updateDisplay(); // Refresh the board after bot's move
+                    }, 1000); // 1 second delay before bot moves
                 }
-                console.log('Switched to player:', currentPlayer.name); // Log player switch
             }
-        }
-
-        else {
+        } else {
             console.log('Invalid move or game over'); // Log invalid move or game over status
         }
     };
@@ -240,6 +233,7 @@ const GameController = (() => {
 const DisplayController = (() => {
     const gameboardDiv = document.getElementById('gameboard');
     const restartButton = document.getElementById('restart-btn');
+    const resutlMessage = document.getElementById('result');
 
     // Update the display to reflect the current game board state
     const updateDisplay = () => {
@@ -264,6 +258,21 @@ const DisplayController = (() => {
     const updateTurnMessage = (player) => {
         const playerTurnMessage = document.getElementById('turn');
         playerTurnMessage.textContent = `It's ${player.name}'s turn.`;
+    };
+
+    // Function to update the result message
+    const updateResultMessage = (result) => {
+        if (result === 'tie') {
+            resutlMessage.textContent = 'It\'s a tie!';
+        }
+
+        else if (result === 'X') {
+            resutlMessage.textContent = 'Player 1 wins!';
+        }
+
+        else if (result === 'O') {
+            resutlMessage.textContent = 'Player 2 wins!';
+        }
     };
 
 
@@ -294,7 +303,7 @@ const DisplayController = (() => {
         updateTurnMessage(GameController.getCurrentPlayer());
     };
 
-    return { initialize, updateTurnMessage, updateDisplay, setDisabledState };
+    return { initialize, updateTurnMessage, updateDisplay, setDisabledState, updateResultMessage };
 })();
 
 // Initialize the game when the page loads

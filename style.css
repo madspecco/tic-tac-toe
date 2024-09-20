@@ -60,6 +60,10 @@ body {
     color: #39ff14;
 }
 
+#difficulty:hover{
+    background-color: #333333;      /* Lighter black on hover */
+}
+
 #controls > div {
     display: flex;
     flex-direction: column;
@@ -76,4 +80,8 @@ body {
     background-color: black;
     border: 0.125rem solid #39ff14;       /* 2px / 16px base font-size = 0.125rem */
     color: #39ff14;
+}
+
+#restart-btn:hover {
+    background-color: #333333;      /* Lighter black on hover */
 }

@@ -220,6 +220,7 @@ const GameController = (() => {
         isGameOver = false;
         currentPlayer = player1;
         DisplayController.updateTurnMessage(currentPlayer);
+        DisplayController.updateResultMessage('');
     };
 
     const getGameOverStatus = () => isGameOver;
@@ -272,6 +273,10 @@ const DisplayController = (() => {
 
         else if (result === 'O') {
             resutlMessage.textContent = 'Player 2 wins!';
+        }
+
+        else {
+            resutlMessage.textContent = '';
         }
     };
 
